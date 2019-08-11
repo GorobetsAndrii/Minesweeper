@@ -97,42 +97,62 @@ public class Controller {
     }
 
     private void destroyEmptyTile(Group group,Board b, int x , int y){
-        System.out.println(x + "  " + y);
         b.board[x][y].setMode(false);
+
         int x1 = x * TileSize + TileShift;
         int y1 = y * TileSize + TileShift;
 
+        if(b.board[x][y].getCondition() == ConditionCell.NUMBER){
+            Text text = new Text(Integer.toString(b.board[x][y].getNumber()));
+
+            int xText = x*TileSize + TileSize/2 + 2;
+            int yText = y*TileSize + TileSize - TileShift;
+
+            text.setX(xText);
+            text.setY(yText);
+
+            group.getChildren().addAll(createTile(x1,y1),text);
+
+            return;
+        }
+        
         group.getChildren().add(createTile(x1,y1));
 
 
-        if(((x>0 && y>0) ? b.board[x-1][y-1].getCondition() : ConditionCell.BOMB) == ConditionCell.EMPTY ){
+        if(((x>0 && y>0) ? b.board[x-1][y-1].getCondition() : ConditionCell.BOMB) == ConditionCell.EMPTY ||
+                ((x>0 && y>0) ? b.board[x-1][y-1].getCondition() : ConditionCell.BOMB) == ConditionCell.NUMBER ){
             if(b.board[x-1][y-1].isClose()) destroyEmptyTile(group,b,x-1,y-1);
         }
-        if((x>0 ? b.board[x-1][y].getCondition() : ConditionCell.BOMB) == ConditionCell.EMPTY ){
+        if((x>0 ? b.board[x-1][y].getCondition() : ConditionCell.BOMB) == ConditionCell.EMPTY ||
+                (x>0 ? b.board[x-1][y].getCondition() : ConditionCell.BOMB) == ConditionCell.NUMBER){
             if(b.board[x-1][y].isClose()) destroyEmptyTile(group,b,x-1,y);
         }
-        if(((x>0 && y<(b.getY()-1)) ? b.board[x-1][y+1].getCondition() : ConditionCell.BOMB) == ConditionCell.EMPTY ){
+        if(((x>0 && y<(b.getY()-1)) ? b.board[x-1][y+1].getCondition() : ConditionCell.BOMB) == ConditionCell.EMPTY ||
+                ((x>0 && y<(b.getY()-1)) ? b.board[x-1][y+1].getCondition() : ConditionCell.BOMB) == ConditionCell.NUMBER){
             if(b.board[x-1][y+1].isClose()) destroyEmptyTile(group,b,x-1,y+1);
         }
 
-        if((y>0 ? b.board[x][y-1].getCondition() : ConditionCell.BOMB) == ConditionCell.EMPTY ){
+        if((y>0 ? b.board[x][y-1].getCondition() : ConditionCell.BOMB) == ConditionCell.EMPTY ||
+                (y>0 ? b.board[x][y-1].getCondition() : ConditionCell.BOMB) == ConditionCell.NUMBER){
             if(b.board[x][y-1].isClose()) destroyEmptyTile(group,b,x,y-1);
         }
-        if((y<(b.getY()-1) ? b.board[x][y+1].getCondition() : ConditionCell.BOMB) == ConditionCell.EMPTY ){
+        if((y<(b.getY()-1) ? b.board[x][y+1].getCondition() : ConditionCell.BOMB) == ConditionCell.EMPTY ||
+                (y<(b.getY()-1) ? b.board[x][y+1].getCondition() : ConditionCell.BOMB) == ConditionCell.NUMBER){
             if(b.board[x][y+1].isClose()) destroyEmptyTile(group,b,x,y+1);
         }
 
-        if(((x<(b.getX()-1) && y>0) ? b.board[x+1][y-1].getCondition() : ConditionCell.BOMB) == ConditionCell.EMPTY ){
+        if(((x<(b.getX()-1) && y>0) ? b.board[x+1][y-1].getCondition() : ConditionCell.BOMB) == ConditionCell.EMPTY ||
+                ((x<(b.getX()-1) && y>0) ? b.board[x+1][y-1].getCondition() : ConditionCell.BOMB) == ConditionCell.NUMBER){
             if(b.board[x+1][y-1].isClose()) destroyEmptyTile(group,b,x+1,y-1);
         }
-        if((x<(b.getX()-1) ? b.board[x+1][y].getCondition() : ConditionCell.BOMB) == ConditionCell.EMPTY ){
+        if((x<(b.getX()-1) ? b.board[x+1][y].getCondition() : ConditionCell.BOMB) == ConditionCell.EMPTY ||
+                (x<(b.getX()-1) ? b.board[x+1][y].getCondition() : ConditionCell.BOMB) == ConditionCell.NUMBER){
             if(b.board[x+1][y].isClose()) destroyEmptyTile(group,b,x+1,y);
         }
-        if(((x<(b.getX()-1) && y<(b.getY()-1)) ? b.board[x+1][y+1].getCondition() : ConditionCell.BOMB) == ConditionCell.EMPTY ){
+        if(((x<(b.getX()-1) && y<(b.getY()-1)) ? b.board[x+1][y+1].getCondition() : ConditionCell.BOMB) == ConditionCell.EMPTY ||
+                ((x<(b.getX()-1) && y<(b.getY()-1)) ? b.board[x+1][y+1].getCondition() : ConditionCell.BOMB) == ConditionCell.NUMBER){
             if(b.board[x+1][y+1].isClose()) destroyEmptyTile(group,b,x+1,y+1);
         }
-
-        System.out.println("END");
     }
 
     private Rectangle createTile(int x , int y){

@@ -1,11 +1,9 @@
 package Game;
 
-import java.lang.Math.*;
-
 public class Board {
     private int X = 15;
     private int Y = 15;
-    private int NumberOfBombs = 36;
+    private int NumberOfBombs = 40;
     public Cell[][] board;
 
     public Board(){
