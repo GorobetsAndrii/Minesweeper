@@ -3,7 +3,7 @@ package Game;
 public class Cell {
     private ConditionCell ccl;
     private int number;
-    public boolean mode = false;
+    private boolean mode = true;
 
     public Cell(ConditionCell c){
         ccl = c;
@@ -28,5 +28,13 @@ public class Cell {
     public void setNumber(int num){
         number = num;
         ccl = ConditionCell.NUMBER;
+    }
+
+    public boolean isClose(){
+        return mode;
+    }
+
+    public void setMode(boolean b){
+        mode = b;
     }
 }

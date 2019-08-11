@@ -21,11 +21,11 @@ public class Controller {
         Parent root = FXMLLoader.load(getClass().getResource("sample.fxml"));
 
         Board board = new Board();
-        Group gr = createRectangle(board);
+        Group gr = createRectangles(board);
 
 
         gr.setOnMouseClicked((event -> {
-            OnClick(gr,board,(int)event.getSceneX()/TileSize,(int)event.getSceneY()/TileSize);
+            onClick(gr,board,(int)event.getSceneX()/TileSize,(int)event.getSceneY()/TileSize);
         }));
 
         primaryStage.setTitle("Minesweeper");
@@ -34,7 +34,7 @@ public class Controller {
         primaryStage.show();
     }
 
-    private Group createRectangle(Board board){
+    private Group createRectangles(Board board){
         Group group = new Group();
 
         int x = TileShift;
@@ -60,8 +60,9 @@ public class Controller {
         return group;
     }
 
-    private void OnClick(Group group , Board b , int x , int y ){
+    private void onClick(Group group , Board b , int x , int y ){
         if(b.board[x][y].getCondition() == ConditionCell.BOMB){
+            b.board[x][y].setMode(false);
             Text text = new Text("X");
 
             int x1 = x * TileSize + TileShift;
@@ -70,20 +71,14 @@ public class Controller {
             x = x*TileSize + TileSize/2 + 2;
             y = y*TileSize + TileSize - TileShift;
 
-            Rectangle r = new Rectangle();
-
-            r.setX(x1);
-            r.setY(y1);
-            r.setHeight(TileSize - 2);
-            r.setWidth(TileSize - 2);
-            r.setFill(Color.WHITE);
-
             text.setX(x);
             text.setY(y);
+            text.setFill(Color.DARKRED);
 
-            group.getChildren().addAll(r,text);
+            group.getChildren().addAll(createTile(x1,y1),text);
 
         }else if(b.board[x][y].getCondition() == ConditionCell.NUMBER) {
+            b.board[x][y].setMode(false);
             Text text = new Text(Integer.toString(b.board[x][y].getNumber()));
 
             int x1 = x * TileSize + TileShift;
@@ -92,31 +87,44 @@ public class Controller {
             x = x*TileSize + TileSize/2 + 2;
             y = y*TileSize + TileSize - TileShift;
 
-            Rectangle r = new Rectangle();
-
-            r.setX(x1);
-            r.setY(y1);
-            r.setHeight(TileSize - 2);
-            r.setWidth(TileSize - 2);
-            r.setFill(Color.WHITE);
-
             text.setX(x);
             text.setY(y);
 
-            group.getChildren().addAll(r,text);
+            group.getChildren().addAll(createTile(x1,y1),text);
         }else{
-            x = x * TileSize + TileShift;
-            y = y * TileSize + TileShift;
-
-            Rectangle r = new Rectangle();
-
-            r.setX(x);
-            r.setY(y);
-            r.setHeight(TileSize - 2);
-            r.setWidth(TileSize - 2);
-            r.setFill(Color.AQUA);
-
-            group.getChildren().add(r);
+            destroyEmptyTile(group,b,x,y);
         }
+    }
+
+    private void destroyEmptyTile(Group group,Board b, int x , int y){
+        b.board[x][y].setMode(false);
+        int x1 = x * TileSize + TileShift;
+        int y1 = y * TileSize + TileShift;
+
+        group.getChildren().add(createTile(x1,y1));
+
+
+        if(((x>0 && y>0) ? b.board[x-1][y-1].getCondition() : ConditionCell.BOMB) == ConditionCell.EMPTY && b.board[x-1][y-1].isClose()) destroyEmptyTile(group,b,x-1,y-1);
+        if((x>0 ? b.board[x-1][y].getCondition() : ConditionCell.BOMB) == ConditionCell.EMPTY && b.board[x-1][y].isClose()) destroyEmptyTile(group,b,x-1,y);
+        if(((x>0 && y<(b.getY()-1)) ? b.board[x-1][y+1].getCondition() : ConditionCell.BOMB) == ConditionCell.EMPTY && b.board[x-1][y+1].isClose()) destroyEmptyTile(group,b,x-1,y+1);
+
+        if((y>0 ? b.board[x][y-1].getCondition() : ConditionCell.BOMB) == ConditionCell.EMPTY && b.board[x][y-1].isClose()) destroyEmptyTile(group,b,x,y-1);
+        if((y<(b.getY()-1) ? b.board[x][y+1].getCondition() : ConditionCell.BOMB) == ConditionCell.EMPTY && b.board[x][y+1].isClose()) destroyEmptyTile(group,b,x-1,y+1);
+
+        if(((x<(b.getX()-1) && y>0) ? b.board[x+1][y-1].getCondition() : ConditionCell.BOMB) == ConditionCell.EMPTY && b.board[x+1][y-1].isClose()) destroyEmptyTile(group,b,x+1,y-1);
+        if((x<(b.getX()-1) ? b.board[x+1][y].getCondition() : ConditionCell.BOMB) == ConditionCell.EMPTY && b.board[x+1][y].isClose()) destroyEmptyTile(group,b,x+1,y);
+        if(((x<(b.getX()-1) && y<(b.getY()-1)) ? b.board[x+1][y+1].getCondition() : ConditionCell.BOMB) == ConditionCell.EMPTY && b.board[x+1][y+1].isClose()) destroyEmptyTile(group,b,x+1,y+1);
+    }
+
+    private Rectangle createTile(int x , int y){
+        Rectangle r = new Rectangle();
+
+        r.setX(x);
+        r.setY(y);
+        r.setHeight(TileSize - 2);
+        r.setWidth(TileSize - 2);
+        r.setFill(Color.WHITE);
+
+        return r;
     }
 }
