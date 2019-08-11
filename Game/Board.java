@@ -77,8 +77,11 @@ public class Board {
                 if((i<X-1 ? board[i+1][j].getCondition() : ConditionCell.EMPTY) == ConditionCell.BOMB) count++;
                 if(((i<X-1 && j<Y-1) ? board[i+1][j+1].getCondition() : ConditionCell.EMPTY) == ConditionCell.BOMB) count++;
 
-
-                board[i][j].setNumber(count);
+                if(count == 0){
+                    board[i][j].setCondition(ConditionCell.EMPTY);
+                }else{
+                    board[i][j].setNumber(count);
+                }
                 count = 0;
             }
         }

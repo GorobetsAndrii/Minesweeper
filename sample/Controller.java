@@ -9,6 +9,7 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Text;
 
 public class Controller {
     private int Width = 600;
@@ -24,26 +25,7 @@ public class Controller {
 
 
         gr.setOnMouseClicked((event -> {
-            int x = (int)event.getSceneX();
-            int y = (int)event.getSceneY();
-
-            x = x / TileSize;
-            y = y / TileSize;
-
-            x = x*TileSize+TileShift;
-            y = y*TileSize+TileShift;
-
-            System.out.println(x + "  " + y);
-
-            Rectangle r = new Rectangle();
-
-            r.setX(x);
-            r.setY(y);
-            r.setHeight(TileSize - 2);
-            r.setWidth(TileSize - 2);
-            r.setFill(Color.AQUA);
-
-            gr.getChildren().add(r);
+            OnClick(gr,board,(int)event.getSceneX()/TileSize,(int)event.getSceneY()/TileSize);
         }));
 
         primaryStage.setTitle("Minesweeper");
@@ -78,4 +60,63 @@ public class Controller {
         return group;
     }
 
+    private void OnClick(Group group , Board b , int x , int y ){
+        if(b.board[x][y].getCondition() == ConditionCell.BOMB){
+            Text text = new Text("X");
+
+            int x1 = x * TileSize + TileShift;
+            int y1 = y * TileSize + TileShift;
+
+            x = x*TileSize + TileSize/2 + 2;
+            y = y*TileSize + TileSize - TileShift;
+
+            Rectangle r = new Rectangle();
+
+            r.setX(x1);
+            r.setY(y1);
+            r.setHeight(TileSize - 2);
+            r.setWidth(TileSize - 2);
+            r.setFill(Color.WHITE);
+
+            text.setX(x);
+            text.setY(y);
+
+            group.getChildren().addAll(r,text);
+
+        }else if(b.board[x][y].getCondition() == ConditionCell.NUMBER) {
+            Text text = new Text(Integer.toString(b.board[x][y].getNumber()));
+
+            int x1 = x * TileSize + TileShift;
+            int y1 = y * TileSize + TileShift;
+
+            x = x*TileSize + TileSize/2 + 2;
+            y = y*TileSize + TileSize - TileShift;
+
+            Rectangle r = new Rectangle();
+
+            r.setX(x1);
+            r.setY(y1);
+            r.setHeight(TileSize - 2);
+            r.setWidth(TileSize - 2);
+            r.setFill(Color.WHITE);
+
+            text.setX(x);
+            text.setY(y);
+
+            group.getChildren().addAll(r,text);
+        }else{
+            x = x * TileSize + TileShift;
+            y = y * TileSize + TileShift;
+
+            Rectangle r = new Rectangle();
+
+            r.setX(x);
+            r.setY(y);
+            r.setHeight(TileSize - 2);
+            r.setWidth(TileSize - 2);
+            r.setFill(Color.AQUA);
+
+            group.getChildren().add(r);
+        }
+    }
 }
